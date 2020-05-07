@@ -1,0 +1,24 @@
+{
+    "number": "MH25570631",
+    "issuedAt": "2019-01-19 00:00:33",
+    "period": "10802",
+    "status": "已確認",
+    "sellerName": "旱溪夜市站",
+    "sellerAddress": "",
+    "sellerBan": "72452657",
+    "buyerBan": "",
+    "currency": "",
+    "amount": "50",
+    "details": [
+        {
+            "unitPrice": "50",
+            "amount": "50",
+            "quantity": "1",
+            "rowNum": "001",
+            "description": "停車費"
+        }
+    ],
+    "note": {
+        "randomNumber": "2355"
+    }
+}
