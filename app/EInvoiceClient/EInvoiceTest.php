@@ -15,10 +15,10 @@ class EInvoiceTest extends TestCase
     {
         $eInvoiceClient = new EInvoiceClient();
         $invoice = $eInvoiceClient->getEInvoice(
-            "WX59201746",
-            "2019/12/29",
-            "10812",
-            "1825"
+            "AC63200542",
+            "2020/04/13",
+            "10904",
+            "5431"
         );
 
         echo json_encode($invoice);

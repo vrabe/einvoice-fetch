@@ -65,11 +65,11 @@ class EInvoiceTest extends TestCase
     public function testJsonSerialize(array $invoices)
     {
         $this->assertJsonStringEqualsJsonFile(
-            __DIR__ . "/EInvoiceTest01.json", 
+            __DIR__ . "/EInvoiceTestOutput01.json", 
             json_encode($invoices[0])
         );
         $this->assertJsonStringEqualsJsonFile(
-            __DIR__ . "/EInvoiceTest02.json", 
+            __DIR__ . "/EInvoiceTestOutput02.json", 
             json_encode($invoices[1])
         );
     }

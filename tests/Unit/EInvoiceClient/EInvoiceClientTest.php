@@ -17,8 +17,8 @@ class EInvoiceClientTest extends TestCase
 {
     public function testGetEInvoice(): void
     {
-        $handle = fopen(__dir__ . "/MH25570631.json", "r");
-        $sucessResult = fread($handle, filesize(__dir__ . "/MH25570631.json"));
+        $handle = fopen(__dir__ . "/EInvoiceTestInput01.json", "r");
+        $sucessResult = fread($handle, filesize(__dir__ . "/EInvoiceTestInput01.json"));
         fclose($handle);
 
         $failResult = '{"v":"0.5","code":951,"msg":"連線逾時"}';
@@ -42,7 +42,7 @@ class EInvoiceClientTest extends TestCase
             "2355"
         );
         $this->assertJsonStringEqualsJsonFile(
-            __DIR__ . "/EInvoiceTest01.json",
+            __DIR__ . "/EInvoiceTestOutput01.json",
             json_encode($invoice)
         );
 
@@ -55,7 +55,7 @@ class EInvoiceClientTest extends TestCase
             "50"
         );
         $this->assertJsonStringEqualsJsonFile(
-            __DIR__ . "/EInvoiceTest01.json",
+            __DIR__ . "/EInvoiceTestOutput01.json",
             json_encode($invoice)
         );
 
