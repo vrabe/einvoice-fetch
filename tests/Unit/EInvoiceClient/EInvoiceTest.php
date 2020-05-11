@@ -26,7 +26,7 @@ class EInvoiceTest extends TestCase
                 "unitPrice" => "50",
                 "amount" => "50",
                 "quantity" => "1",
-                "rowNum" => "001",
+                "rowNum" => "1",
                 "description" => "停車費"
             ]
         ];
@@ -49,7 +49,7 @@ class EInvoiceTest extends TestCase
                 "unitPrice" => "50",
                 "amount" => "50",
                 "quantity" => "1",
-                "rowNum" => "001",
+                "rowNum" => "1",
                 "description" => "停車費"
             ]
         ]);

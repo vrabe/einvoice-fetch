@@ -94,6 +94,7 @@ class EInvoiceClient
         $invoice->currency = $result->currency;
         $invoice->details = $result->details;
 
+        // Get the amount of this einvoice
         if ($amount == null) {
             $sum = 0.0;
             foreach ($result->details as $detail) {
@@ -102,6 +103,14 @@ class EInvoiceClient
             $invoice->amount = (string) $sum;
         } else {
             $invoice->amount = $amount;
+        }
+
+        /* 
+            trim leading 0 of rowNum because rowNum in the return value of 
+            getCarriedEInvoice() doesn't have leading 0s.
+        */
+        foreach ($result->details as $detail) {
+            $detail->rowNum = ltrim($detail->rowNum, "0");
         }
 
         $invoice->note = array(
