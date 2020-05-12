@@ -21,7 +21,6 @@ class EInvoiceClientTest extends TestCase
         $sucessResult = fread($handle, filesize(__dir__ . "/EInvoiceTestInput01.json"));
         fclose($handle);
 
-        $failResult = '{"v":"0.5","code":951,"msg":"連線逾時"}';
         $failResult = '{"v":"0.5","code":904,"msg":"錯誤的查詢種類"}';
 
         $mock = new MockHandler([
@@ -89,6 +88,58 @@ class EInvoiceClientTest extends TestCase
 
     public function testCarriedEInvoice(): void
     {
-        $this->markTestIncomplete();
+        $handle = fopen(__dir__ . "/EInvoiceTestInput02.json", "r");
+        $sucessResult = fread($handle, filesize(__dir__ . "/EInvoiceTestInput02.json"));
+        fclose($handle);
+
+        $failResult = '{"v":"0.5","code":951,"msg":"連線逾時"}';
+
+        $mock = new MockHandler([
+            new Response(200, [], $sucessResult),
+            new Response(200, [], $failResult),
+            new Response(200, [], "<html></html>"),
+            new Response(503)
+        ]);
+        $mockHttpClient = new Client(["handler" => HandlerStack::create($mock)]);
+        $eInvoiceClient = new EInvoiceClient($mockHttpClient);
+
+        // Normal case
+        $invoice = $eInvoiceClient->getCarriedEInvoice(
+            "MH25570631",
+            "2019/01/19",
+            "/TESTEST",
+            "0000"
+        );
+        $this->assertJsonStringEqualsJsonFile(
+            __DIR__ . "/EInvoiceTestOutput02.json",
+            json_encode($invoice)
+        );
+
+        // E-Invoice system error 1
+        $this->expectException(EInvoiceResponseException::class);
+        $invoice = $eInvoiceClient->getCarriedEInvoice(
+            "MH25570631",
+            "2019/01/19",
+            "/TESTEST",
+            "0000"
+        );
+
+        // E-Invoice system error 2
+        $this->expectException(EInvoiceResponseException::class);
+        $invoice = $eInvoiceClient->getCarriedEInvoice(
+            "MH25570631",
+            "2019/01/19",
+            "/TESTEST",
+            "0000"
+        );
+
+        // Server error
+        $this->expectException(RequestException::class);
+        $invoice = $eInvoiceClient->getCarriedEInvoice(
+            "MH25570631",
+            "2019/01/19",
+            "/TESTEST",
+            "0000"
+        );
     }
 }

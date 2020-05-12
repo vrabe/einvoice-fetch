@@ -1,0 +1,24 @@
+{
+    "v": "0.5",
+    "code": 200,
+    "msg": "執行成功",
+    "invNum": "MH25570631",
+    "invDate": "20190119",
+    "sellerName": "旱溪夜市站",
+    "amount": "50",
+    "invStatus": "已確認",
+    "invPeriod": "10802",
+    "details": [
+        {
+            "rowNum": "1",
+            "description": "停車費",
+            "quantity": "1",
+            "unitPrice": "50",
+            "amount": "50"
+        }
+    ],
+    "sellerBan": "72452657",
+    "sellerAddress": "",
+    "invoiceTime": "00:00:33",
+    "currency": ""
+}

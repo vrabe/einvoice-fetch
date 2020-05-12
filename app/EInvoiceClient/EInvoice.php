@@ -15,7 +15,7 @@ class EInvoice implements \JsonSerializable
     public string $sellerBan = "";
     public string $buyerBan = "";
     public string $currency = "";
-    public $amount = "";
+    public string $amount = "";
     public array $details = array();
     public array $note = array();
 

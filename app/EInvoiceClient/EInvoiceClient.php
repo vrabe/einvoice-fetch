@@ -67,7 +67,7 @@ class EInvoiceClient
 
         $result = json_decode((string) $res->getBody());
 
-        if($result === null) {
+        if ($result === null) {
             throw new EInvoiceResponseException("回應不是 JSON");
         }
 
@@ -75,7 +75,7 @@ class EInvoiceClient
             throw new EInvoiceResponseException($result->msg, $result->code);
         }
 
-        if($result->invStatus === "該筆發票並無開立") {
+        if ($result->invStatus === "該筆發票並無開立") {
             throw new EInvoiceResponseException("該筆發票並無開立");
         }
 
@@ -105,8 +105,8 @@ class EInvoiceClient
             $invoice->amount = $amount;
         }
 
-        /* 
-            trim leading 0 of rowNum because rowNum in the return value of 
+        /*
+            trim leading 0s of rowNum because rowNum in the return value of
             getCarriedEInvoice() doesn't have leading 0s.
         */
         foreach ($result->details as $detail) {
@@ -135,6 +135,65 @@ class EInvoiceClient
         string $cardNo,
         string $cardEncrypt
     ): EInvoice {
+        $res = $this->client->request("POST", self::URL . "/PB2CAPIVAN/invServ/InvServ", [
+            "form_params" => [
+                "version" => "0.5",
+                "cardType" => "3J0002",
+                "cardNo" => $cardNo,
+                "expTimeStamp" => time() + 110,
+                "action" => "carrierInvDetail",
+                "timeStamp" => time() + 10, // delay 10s to prevent timeout
+                "invNum" => $invNum,
+                "invDate" => $invDate,
+                "uuid" => $this->uuid,
+                "appID" => $this->appID,
+                "cardEncrypt" => $cardEncrypt
+            ]
+        ]);
+
+        $result = json_decode((string) $res->getBody());
+
+        if ($result === null) {
+            throw new EInvoiceResponseException("回應不是 JSON");
+        }
+
+        if ($result->code != "200") {
+            throw new EInvoiceResponseException($result->msg, $result->code);
+        }
+
+        if ($result->invStatus === "該筆發票並無開立") {
+            throw new EInvoiceResponseException("該筆發票並無開立");
+        }
+
+        $invoice = new EInvoice();
+        $invoice->number = $result->invNum;
+        $invoice->issuedAt = CarbonImmutable::createFromFormat(
+            "YmdH:i:s",
+            $result->invDate . $result->invoiceTime
+        );
+        $invoice->period = $result->invPeriod;
+        $invoice->status = $result->invStatus;
+        $invoice->sellerName = $result->sellerName;
+        $invoice->sellerAddress = $result->sellerAddress;
+        $invoice->sellerBan = $result->sellerBan;
+        $invoice->currency = $result->currency;
+        $invoice->amount = $result->amount;
+        $invoice->details = $result->details;
+
+        // buyerBan field may not exist.
+        if (property_exists($result, "buyerBan")) {
+            $invoice->buyerBan = $result->buyerBan;
+        }
+
+        /*
+            Even though rowNum in the return value of this method doesn't have leading 0s.
+            I still do it to make sure there are no leading 0s.
+        */
+        foreach ($result->details as $detail) {
+            $detail->rowNum = ltrim($detail->rowNum, "0");
+        }
+
+        return $invoice;
     }
 
     /**
