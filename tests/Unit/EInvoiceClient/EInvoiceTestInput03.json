@@ -1,0 +1,64 @@
+{
+    "v": "0.5",
+    "code": 200,
+    "msg": "執行成功",
+    "onlyWinningInv": "N",
+    "details": [
+        {
+            "rowNum": 1,
+            "invNum": "ER02338051",
+            "cardType": "3J0002",
+            "cardNo": "/XCCYDHQ",
+            "sellerName": "統一超商股份有限公司",
+            "invStatus": "已確認",
+            "invDonatable": false,
+            "amount": "81",
+            "invPeriod": "10108",
+            "donateMark": 0,
+            "invDate": {
+                "year": 101,
+                "month": 7,
+                "date": 9,
+                "day": 1,
+                "hours": 0,
+                "minutes": 0,
+                "seconds": 0,
+                "time": 1341763200000,
+                "timezoneOffset": -480
+            },
+            "sellerBan": "12345678",
+            "sellerAddress": "台北市大安區基隆路四段４３號",
+            "invoiceTime": "12:00:00",
+            "buyerBan": "",
+            "currency": ""
+        },
+        {
+            "rowNum": 2,
+            "invNum": "ER02338052",
+            "cardType": "3J0002",
+            "cardNo": "/XCCYDHQ",
+            "sellerName": "統一超商股份有限公司",
+            "invStatus": "已確認",
+            "invDonatable": false,
+            "amount": "82",
+            "invPeriod": "10108",
+            "donateMark": 0,
+            "invDate": {
+                "year": 101,
+                "month": 7,
+                "date": 9,
+                "day": 1,
+                "hours": 0,
+                "minutes": 0,
+                "seconds": 0,
+                "time": 1341763200000,
+                "timezoneOffset": -480
+            },
+            "sellerBan": "12345678",
+            "sellerAddress": "台北市大安區基隆路四段４３號",
+            "invoiceTime": "12:00:01",
+            "buyerBan": "",
+            "currency": ""
+        }
+    ]
+}

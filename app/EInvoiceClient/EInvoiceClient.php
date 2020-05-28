@@ -213,5 +213,49 @@ class EInvoiceClient
         string $cardEncrypt,
         bool $onlyWinningInv = false
     ): array {
+        $res = $this->client->request("POST", self::URL . "/PB2CAPIVAN/invServ/InvServ", [
+            "form_params" => [
+                "version" => "0.5",
+                "cardType" => "3J0002",
+                "cardNo" => $cardNo,
+                "expTimeStamp" => time() + 110,
+                "action" => "carrierInvChk",
+                "timeStamp" => time() + 10, // delay 10s to prevent timeout
+                "startDate" => $startDate,
+                "endDate" => $endDate,
+                "onlyWinningInv" => $onlyWinningInv ? "Y" : "N",
+                "uuid" => $this->uuid,
+                "appID" => $this->appID,
+                "cardEncrypt" => $cardEncrypt
+            ]
+        ]);
+
+        $result = json_decode((string) $res->getBody());
+
+        if ($result === null) {
+            throw new EInvoiceResponseException("回應不是 JSON");
+        }
+
+        if ($result->code != "200") {
+            throw new EInvoiceResponseException($result->msg, $result->code);
+        }
+
+        $invoiceList = array();
+
+        foreach ($result->details as $detail) {
+            $invoiceData = array();
+
+            $invoiceData["invNum"] = $detail->invNum;
+            $invoiceData["cardType"] = $detail->cardType;
+            $invoiceData["cardNo"] = $detail->cardNo;
+            $invoiceData["invDate"] = CarbonImmutable::createFromTimestampMs(
+                $detail->invDate->time,
+                "Asia/Taipei"
+            )->format("Y/m/d");
+            
+            $invoiceList[] = $invoiceData;
+        }
+
+        return $invoiceList;
     }
 }

@@ -142,4 +142,74 @@ class EInvoiceClientTest extends TestCase
             "0000"
         );
     }
+
+    public function testGetCarriedEInvoiceList(): void
+    {
+        $handle = fopen(__dir__ . "/EInvoiceTestInput03.json", "r");
+        $sucessResult = fread($handle, filesize(__dir__ . "/EInvoiceTestInput03.json"));
+        fclose($handle);
+
+        $failResult = '{"v":"0.5","code":951,"msg":"連線逾時"}';
+
+        $mock = new MockHandler([
+            new Response(200, [], $sucessResult),
+            new Response(200, [], $failResult),
+            new Response(200, [], "<html></html>"),
+            new Response(503)
+        ]);
+        $mockHttpClient = new Client(["handler" => HandlerStack::create($mock)]);
+        $eInvoiceClient = new EInvoiceClient($mockHttpClient);
+
+        // Normal case
+        $invoiceList = $eInvoiceClient->getCarriedEInvoiceList(
+            "2012/07/01",
+            "2012/07/31",
+            "/XCCYDHQ",
+            "0000"
+        );
+
+        $expectResult = array(
+            array(
+                "invNum" => "ER02338051",
+                "invDate" => "2012/07/09",
+                "cardType" => "3J0002",
+                "cardNo"=> "/XCCYDHQ"
+            ),
+            array(
+                "invNum" => "ER02338052",
+                "invDate" => "2012/07/09",
+                "cardType" => "3J0002",
+                "cardNo"=> "/XCCYDHQ"
+            )
+        );
+
+        $this->assertEquals($invoiceList, $expectResult);
+
+        // E-Invoice system error 1
+        $this->expectException(EInvoiceResponseException::class);
+        $invoice = $eInvoiceClient->getCarriedEInvoiceList(
+            "2012/07/01",
+            "2012/07/31",
+            "/XCCYDHQ",
+            "0000"
+        );
+
+        // E-Invoice system error 2
+        $this->expectException(EInvoiceResponseException::class);
+        $invoice = $eInvoiceClient->getCarriedEInvoiceList(
+            "2012/07/01",
+            "2012/07/31",
+            "/XCCYDHQ",
+            "0000"
+        );
+
+        // Server error
+        $this->expectException(RequestException::class);
+        $invoice = $eInvoiceClient->getCarriedEInvoiceList(
+            "2012/07/01",
+            "2012/07/31",
+            "/XCCYDHQ",
+            "0000"
+        );
+    }
 }
