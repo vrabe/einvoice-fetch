@@ -5,21 +5,21 @@ namespace App\Console\Commands;
 use App\Repositories\EInvoiceRepository;
 use Illuminate\Console\Command;
 
-class getInvoices extends Command
+class getInvoice extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = "invoice:get-batch {invoiceCSV} {--O|output=output.json}";
+    protected $signature = "invoice:get {invNum} {invDate} {invTerm} {randomNumber} {amount} {--O|output=output.json}";
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = "Get invoices";
+    protected $description = "Get invoice";
 
     /**
      * Create a new command instance.
@@ -39,30 +39,15 @@ class getInvoices extends Command
      */
     public function handle(EInvoiceRepository $repo)
     {
-        $csvFilename = $this->argument("invoiceCSV");
-        $handle = fopen($csvFilename, "r");
-        $inputData = array();
-        if($handle === false) {
-            return 1;
-        }
-        while (($data = fgetcsv($handle, 1000, ",")) !== false) {
-            $num = count($data);
-            if($num === 4 || $num === 5) {
-                $inputEntry = array(
-                    "invNum" => $data[0],
-                    "invDate" => $data[1],
-                    "invTerm" => $data[2],
-                    "randomNumber" => $data[3]
-                );
-                if($num === 5) {
-                    $inputEntry["amount"] = $data[4];
-                }
-                $inputData[] = $inputEntry;
-            } else {
-                return 2;
-            }
-        }
-        fclose($handle);
+        $inputData = array(
+            array(
+                "invNum" => $this->argument("invNum"),
+                "invDate" => $this->argument("invDate"),
+                "invTerm" => $this->argument("invTerm"),
+                "randomNumber" => $this->argument("randomNumber"),
+                "amount" => $this->argument("amount")
+            )
+        );
         $outputData = $repo->getEInvoices($inputData);
         $outputJson = json_encode($outputData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $outputFilename = $this->option("output");
